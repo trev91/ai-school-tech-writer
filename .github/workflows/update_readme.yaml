@@ -8,7 +8,7 @@ jobs:
   update-readme:
     name: Update README after PR merge
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && !contains(github.event.pull_request.title, 'AI PR')
+    if: github.event.pull_request.merged == true
 
     steps:
       # Check out the repo to access its content
@@ -35,6 +35,7 @@ jobs:
           commit_sha=$(jq -r .pull_request.head.sha "$GITHUB_EVENT_PATH")
           echo "pull_request_number=$pr_num" >> $GITHUB_ENV
           echo "commit_sha=$commit_sha" >> $GITHUB_ENV
+
       # Run the Python script
       - name: Generate Updated README
         env:
@@ -44,7 +45,7 @@ jobs:
           PR_NUMBER: ${{ env.pull_request_number }}
           COMMIT_SHA: ${{ env.commit_sha }}
         run: python main.py
-      
+
       # Additional step to enable debugging, helps in troublshooting
       - name: Enable Debug Logging
         run: |
